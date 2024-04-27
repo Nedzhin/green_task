@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GREEN-API Test Page</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .response-container {
+            margin-top: 20px;
+        }
+
+        .outer-container{
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="outer-container">
+        <div class="container">
+            <!-- Buttons for API requests -->
+            <label for="idInstance">ID Instance:</label>
+            <input type="text" id="idInstance" name="idInstance"><br><br>
+            <label for="aapiTokenInstance">API Token:</label>
+            <input type="text" id="apiTokenInstance" name="apiTokenInstance"><br><br>
+            <button onclick="getSettings()">Get Settings</button>
+            <button onclick="getStateInstance()">Get State Instance</button>
+            
+            
+
+            <!-- Input fields for API requests -->
+            <input type="text" id="phoneNumber" placeholder="Phone Number">
+            <input type="text" id="messageContext" placeholder="Message Context">
+            <button onclick="sendMessage()">Send Message</button>
+
+            <input type="text" id="phoneNumber2" placeholder="Phone Number">
+            <input type="text" id="fileUrl" placeholder="File URL">
+            <button onclick="sendFileByUrl()">Send File by URL</button>
+        </div>
+
+        <div class="response-container">
+            <h3>Ответ:</h3>
+            <div id="response"></div>
+        </div>
+    </div>
+    <!-- JavaScript for handling API requests -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function getSettings() {
+            // Make AJAX request to Flask server
+            var idInstance = $("#idInstance").val();
+            var apiTokenInstance = $("#apiTokenInstance").val();
+
+            $.get("/get_settings", {idInstance: idInstance, apiTokenInstance: apiTokenInstance}, function(response) {
+                $("#response").html(response);
+            });
+        }
+
+        function getStateInstance() {
+            // Make AJAX request to Flask server
+            var idInstance = $("#idInstance").val();
+            var apiTokenInstance = $("#apiTokenInstance").val();
+            $.get("/get_state_instance", {idInstance: idInstance, apiTokenInstance: apiTokenInstance}, function(response) {
+                $("#response").html(response);
+            });
+        }
+
+        function sendMessage() {
+            // Extract data from input fields
+            var phoneNumber = $("#phoneNumber").val();
+            var messageContext = $("#messageContext").val();
+            var idInstance = $("#idInstance").val();
+            var apiTokenInstance = $("#apiTokenInstance").val();
+            // Make AJAX request to Flask server
+            $.get("/send_message", { phone_number: phoneNumber, message_context: messageContext , idInstance: idInstance, apiTokenInstance: apiTokenInstance}, function(response) {
+                $("#response").html(response);
+            });
+        }
+
+        function sendFileByUrl() {
+            // Extract data from input field
+            var fileUrl = $("#fileUrl").val();
+            var idInstance = $("#idInstance").val();
+            var apiTokenInstance = $("#apiTokenInstance").val();
+            var phoneNumber = $("#phoneNumber2").val();
+            // Make AJAX request to Flask server
+            $.get("/send_file_by_url", { file_url: fileUrl , idInstance: idInstance, apiTokenInstance: apiTokenInstance, phone_number: phoneNumber}, function(response) {
+                $("#response").html(response);
+            });
+        }
+    </script>
+</body>
+</html>
